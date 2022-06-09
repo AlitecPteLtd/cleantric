@@ -10,6 +10,7 @@
     'version': '0.1.0.0.4',
     'depends': ['crm', 'website_crm', 'website', 'business_appointment_website', ],
     'data': [
-
+        'views/contact_us.xml',
+        'views/appointment_checkout_form.xml',
     ],
 }

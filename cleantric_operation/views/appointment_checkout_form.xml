@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        in this page add remaing fields in form and arrang all the field same as shop address form -->
+         <template id="appointment_checkout_form"  name="Contact Info" inherit_id="business_appointment_website.ba_contact_info">
+             <xpath expr="//div[hasclass('ba_custom_fields_portal')]" position="replace">
+                 <div class="row ba_custom_fields_portal " style="width:60%; margin: auto;">
+                            <div class="col-lg-12" t-if="error_message" >
+                                <div  class="alert alert-danger" role="alert">
+                                    <t t-foreach="error_message" t-as="err">
+                                        <t t-esc="err"/><br />
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="form-group  col-xl-12">
+                                <label class="col-form-label" for="contact_name">
+                                    <b>Your Name</b>
+                                </label>
+                                <input type="text"
+                                       name="contact_name"
+                                       t-attf-class="form-control #{error.get('contact_name') and 'is-invalid' or ''}"
+                                       t-att-value="contact_name"
+                                />
+                            </div>
+                            <div class="form-group col-xl-6">
+                                <label class="col-form-label" for="email">
+                                    <b>Email</b>
+                                </label>
+                                <input type="email"
+                                       name="email"
+                                       t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}"
+                                       t-att-value="email"
+                                />
+                            </div>
+                            <div class="form-group  col-xl-6">
+                                <label class="col-form-label"  for="mobile">
+                                    <b>Phone</b>
+                                </label>
+                                <input type="tel"
+                                       name="mobile"
+                                       t-attf-class="form-control #{error.get('mobile') and 'is-invalid' or ''}"
+                                       t-att-value="mobile"
+                                       readonly="1"
+                                />
+                            </div>
+
+                            <div class="form-group  col-xl-12">
+                                <label t-attf-class="col-form-label" for="street">
+                                    <b>Street and Number</b>
+                                </label>
+                                <input type="text"
+                                       name="street"
+                                       t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}"
+                                       t-att-value="street"
+                                       readonly="1"
+                                />
+                            </div>
+                            <div class="form-group  col-xl-12">
+                                <label t-attf-class="col-form-label #{'street2' not in mandatory_fields and 'label-optional' or ''}" for="street2">
+                                    <b>Street 2</b>
+                                </label>
+                                <input type="text"
+                                       name="street2"
+                                       t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}"
+                                       t-att-value="street2"
+                                       readonly="1"
+                                />
+                            </div>
+                            <div class="form-group  col-xl-9">
+                                <label t-attf-class="col-form-label #{'city' not in mandatory_fields and 'label-optional' or ''}" for="city">
+                                    <b>City</b>
+                                </label>
+                                <input type="text"
+                                       name="city"
+                                       t-attf-class="form-control #{error.get('city') and 'is-invalid' or ''}"
+                                       t-att-value="city"
+                                       readonly="1"
+                                />
+                            </div>
+                            <div class="form-group  col-xl-3">
+                                <label t-attf-class="col-form-label #{'zipcode' not in mandatory_fields and 'label-optional' or ''}" for="zipcode">
+                                    <b> Zip / Postal Code</b>
+                                </label>
+                                <input type="text"
+                                       name="zipcode"
+                                       t-attf-class="form-control #{error.get('zipcode') and 'is-invalid' or ''}"
+                                       t-att-value="zipcode"
+                                       readonly="1"
+                                />
+                            </div>
+                           <div class="form-group col-xl-6">
+                                <label t-attf-class="col-form-label #{'country_id' not in mandatory_fields and 'label-optional' or ''}" for="country_id">
+                                    <b>Country</b>
+                                </label>
+                               <t t-set="countries" t-value=" request.env['res.country'].sudo().search([])"/>
+                                <select name="country_id" class="form-control " id="country_id">
+                                    <option value="">Country...</option>
+                                    <t t-foreach="countries or []" t-as="country">
+                                        <option t-att-value="country.id"
+                                                t-att-selected="country.id == int(country_id) if country_id else 0"
+                                        >
+                                            <t t-esc="country.name" />
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="clearfix col-xl-12"/>
+                            <div name="extra_notes_div"
+                                 t-attf-class="form-group #{error.get('description') and 'o_has_error' or ''} col-xl-12"
+                            >
+                                <label class="col-form-label label-optional" for="description">
+                                    Extra comments
+                                </label>
+                                <textarea type="text"
+                                          name="description"
+                                          t-attf-class="form-control #{error.get('description') and 'is-invalid' or ''}"
+                                ><t t-esc="description"/></textarea>
+                            </div>
+                        </div>
+              </xpath>
+             <xpath expr="//div[hasclass('o_portal_details')]/div/div[hasclass('clearfix')]" position="replace">
+                 <div class="clearfix" style="width: 80%;">
+                        <button type="submit" class="btn btn-primary float-right mb32 btn_forward_checkout">
+                                Confirm
+                            <span class="fa fa-long-arrow-right" />
+                        </button>
+                 </div>
+              </xpath>
+         </template>
+    </data>
+</odoo>

@@ -1,8 +1,6 @@
 from odoo import http, _
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import get_records_pager, CustomerPortal
-from odoo.addons.website.models.ir_http import sitemap_qs2dom
-from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
     
@@ -44,6 +42,15 @@ class WebsiteSale(WebsiteSale):
             return request.redirect("/web/login?redirect=/shop")
         res = super(WebsiteSale, self).shop(page=page, category=category, search=search,min_price=min_price, max_price=max_price, ppg=ppg, **post)
         return res
+
+
+class WebsiteForm(http.Controller):
+
+    @http.route('/contactus', type="http", auth="public", website="True")
+    def contact_us_data_form(self, **kwargs):
+        """
+           this method use contact us view display"""
+        return request.render('cleantric_operation.contact_us_form_data_new')
 
 
 

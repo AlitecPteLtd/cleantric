@@ -1,10 +1,13 @@
-from odoo import http, _
+from odoo import http,tools, _
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import get_records_pager, CustomerPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
     
 class CustomerPortal(CustomerPortal):
+    MANDATORY_BILLING_FIELDS = ["name", "email"]
+    OPTIONAL_BILLING_FIELDS = ["zipcode", "state_id", "vat", "company_name", "mobile", "street", "street2", "city", "country_id"]
+
     """
         this controller inherit appointment page and the user not login then force fully
          redirect login page.

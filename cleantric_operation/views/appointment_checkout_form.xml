@@ -34,7 +34,7 @@
                             </div>
                             <div class="form-group  col-xl-6">
                                 <label class="col-form-label"  for="mobile">
-                                    <b>Phone</b>
+                                    <b>Mobile</b>
                                 </label>
                                 <input type="tel"
                                        name="mobile"
@@ -46,7 +46,7 @@
 
                             <div class="form-group  col-xl-12">
                                 <label t-attf-class="col-form-label" for="street">
-                                    <b>Street and Number</b>
+                                    <b>Street</b>
                                 </label>
                                 <input type="text"
                                        name="street"
@@ -57,7 +57,7 @@
                             </div>
                             <div class="form-group  col-xl-12">
                                 <label t-attf-class="col-form-label #{'street2' not in mandatory_fields and 'label-optional' or ''}" for="street2">
-                                    <b>Street 2</b>
+                                    <b>Unit no</b>
                                 </label>
                                 <input type="text"
                                        name="street2"
@@ -93,11 +93,12 @@
                                     <b>Country</b>
                                 </label>
                                <t t-set="countries" t-value=" request.env['res.country'].sudo().search([])"/>
-                                <select name="country_id" class="form-control " id="country_id">
+                                <select name="country_id" class="form-control " id="country_id" disabled="true">
                                     <option value="">Country...</option>
                                     <t t-foreach="countries or []" t-as="country">
                                         <option t-att-value="country.id"
                                                 t-att-selected="country.id == int(country_id) if country_id else 0"
+                                                 readonly="1"
                                         >
                                             <t t-esc="country.name" />
                                         </option>

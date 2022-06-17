@@ -57,7 +57,7 @@
                             </div>
                             <div class="form-group  col-xl-12">
                                 <label t-attf-class="col-form-label #{'street2' not in mandatory_fields and 'label-optional' or ''}" for="street2">
-                                    <b>Unit no</b>
+                                    <b>Unit No</b>
                                 </label>
                                 <input type="text"
                                        name="street2"
@@ -93,18 +93,25 @@
                                     <b>Country</b>
                                 </label>
                                <t t-set="countries" t-value=" request.env['res.country'].sudo().search([])"/>
-                                <select name="country_id" class="form-control " id="country_id" disabled="true">
-                                    <option value="">Country...</option>
-                                    <t t-foreach="countries or []" t-as="country">
-                                        <option t-att-value="country.id"
-                                                t-att-selected="country.id == int(country_id) if country_id else 0"
-                                                 readonly="1"
-                                        >
-                                            <t t-esc="country.name" />
-                                        </option>
-                                    </t>
-                                </select>
+                                <input type="text"
+                                       name="country_id"
+                                       t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}"
+                                       t-att-value="request.env['res.country'].browse(country_id).name"
+                                       readonly="1"
+                                />
                             </div>
+                            <t t-set="c_id" t-value="request.env['res.country'].browse(country_id)"/>
+                          <div class="form-group col-xl-6"  t-att-style="(not c_id or not c_id.state_ids) and 'display: none'">
+                                <label t-attf-class="col-form-label #{'state_id' not in mandatory_fields and 'label-optional' or ''}" for="country_id">
+                                    <b>State</b>
+                                </label>
+                                <input type="text"
+                                       name="state_id"
+                                       t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}"
+                                       t-att-value="request.env['res.country.state'].browse(state_id).name"
+                                       readonly="1"
+                                />
+                          </div>
                             <div class="clearfix col-xl-12"/>
                             <div name="extra_notes_div"
                                  t-attf-class="form-group #{error.get('description') and 'o_has_error' or ''} col-xl-12"

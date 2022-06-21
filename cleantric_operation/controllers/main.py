@@ -120,7 +120,7 @@ class CustomerPortal(CustomerPortal):
         error = dict()
         error_message = []
         all_fields, mandatory_fields = request.website._return_website_ba_contact_fields()
-        mandatory_fields+=["mobile","street","street2","city","zipcode","country_id"]
+        mandatory_fields+=["mobile","street","street2","zipcode","country_id"]
         for field_name in mandatory_fields:
             if not data.get(field_name):
                 error[field_name] = 'missing'
@@ -162,7 +162,7 @@ class CustomerPortal(CustomerPortal):
 
         res = super(CustomerPortal, self)._step5_prepare_values(session_appointment_id=session_appointment_id,durl=durl,**kw)
         res.update({
-            'mobile': session_appointment_id.partner_id.mobile or False,
+            'mobile': session_appointment_id.partner_id.mobile or '',
             'street': session_appointment_id.partner_id.street or '',
             'street2': session_appointment_id.partner_id.street2 or '',
             'city': session_appointment_id.partner_id.city or '',
@@ -189,6 +189,24 @@ class WebsiteSale(WebsiteSale):
         if not request.session.uid:
             return request.redirect("/web/login?redirect=/shop")
         res = super(WebsiteSale, self).shop(page=page, category=category, search=search,min_price=min_price, max_price=max_price, ppg=ppg, **post)
+        return res
+
+    def _get_mandatory_fields_billing(self, country_id=False):
+        res = super(WebsiteSale, self)._get_mandatory_fields_billing(country_id=country_id)
+        res.pop(3)
+        if country_id:
+            country = request.env['res.country'].browse(country_id)
+            if country.state_required:
+                res.pop(4)
+        return res
+
+    def _get_mandatory_fields_shipping(self, country_id=False):
+        res = super(WebsiteSale, self)._get_mandatory_fields_shipping(country_id=country_id)
+        res.pop(3)
+        if country_id:
+            country = request.env['res.country'].browse(country_id)
+            if country.state_required:
+                res.pop(4)
         return res
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
@@ -267,12 +285,11 @@ class WebsiteSale(WebsiteSale):
             'can_edit_vat': can_edit_vat,
             'error': errors,
             'callback': kw.get('callback'),
-            'only_services': order and order.only_services,
+            'only_services': order and order.only_services
         }
-        render_values.update(self._get_country_related_render_values(kw, render_values))
-        partner = request.env['res.partner'].browse(partner_id)
+        partner = request.env['res.partner'].sudo().browse(int(kw.get('partner_id')))
         render_values.update({
-            'mobile': partner.mobile or False,
+            'mobile': partner.mobile or '',
             'street': partner.street or '',
             'street2': partner.street2 or '',
             'city': partner.city or '',
@@ -280,6 +297,7 @@ class WebsiteSale(WebsiteSale):
             'state_id': partner.state_id and partner.state_id.id or '',
             'zipcode': partner.zip or ''
         })
+        render_values.update(self._get_country_related_render_values(kw, render_values))
         return request.render("website_sale.address", render_values)
 
 

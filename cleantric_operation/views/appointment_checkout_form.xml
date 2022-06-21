@@ -67,12 +67,12 @@
                                 />
                             </div>
                             <div class="form-group  col-xl-9">
-                                <label t-attf-class="col-form-label #{'city' not in mandatory_fields and 'label-optional' or ''}" for="city">
+                                <label t-attf-class="col-form-label" for="city">
                                     <b>City</b>
                                 </label>
                                 <input type="text"
-                                       name="city"
-                                       t-attf-class="form-control #{error.get('city') and 'is-invalid' or ''}"
+                                       name="city1"
+                                       t-attf-class="form-control"
                                        t-att-value="city"
                                        readonly="1"
                                 />

@@ -20,6 +20,7 @@
                                        name="contact_name"
                                        t-attf-class="form-control #{error.get('contact_name') and 'is-invalid' or ''}"
                                        t-att-value="contact_name"
+                                       readonly="1"
                                 />
                             </div>
                             <div class="form-group col-xl-6">
@@ -30,6 +31,7 @@
                                        name="email"
                                        t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}"
                                        t-att-value="email"
+                                       readonly="1"
                                 />
                             </div>
                             <div class="form-group  col-xl-6">

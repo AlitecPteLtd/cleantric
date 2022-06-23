@@ -287,16 +287,17 @@ class WebsiteSale(WebsiteSale):
             'callback': kw.get('callback'),
             'only_services': order and order.only_services
         }
-        partner = request.env['res.partner'].sudo().browse(int(kw.get('partner_id')))
-        render_values.update({
-            'mobile': partner.mobile or '',
-            'street': partner.street or '',
-            'street2': partner.street2 or '',
-            'city': partner.city or '',
-            'country_id': partner.country_id and partner.country_id.id or '',
-            'state_id': partner.state_id and partner.state_id.id or '',
-            'zipcode': partner.zip or ''
-        })
+        if not kw.get('partner_id') != -1:
+            partner = request.env['res.partner'].sudo().browse(int(kw.get('partner_id')))
+            render_values.update({
+                'mobile': partner.mobile or '',
+                'street': partner.street or '',
+                'street2': partner.street2 or '',
+                'city': partner.city or '',
+                'country_id': partner.country_id and partner.country_id.id or '',
+                'state_id': partner.state_id and partner.state_id.id or '',
+                'zipcode': partner.zip or ''
+            })
         render_values.update(self._get_country_related_render_values(kw, render_values))
         return request.render("website_sale.address", render_values)
 

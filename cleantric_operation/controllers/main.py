@@ -193,27 +193,30 @@ class WebsiteSale(WebsiteSale):
 
     def _get_mandatory_fields_billing(self, country_id=False):
         res = super(WebsiteSale, self)._get_mandatory_fields_billing(country_id=country_id)
-        res.pop(3)
+        res.remove('city')
         if country_id:
             country = request.env['res.country'].browse(country_id)
             if country.state_required:
-                res.pop(4)
+                res.remove('state_id')
+            if country.zip_required:
+                res.remove('zip')
         return res
 
     def _get_mandatory_fields_shipping(self, country_id=False):
         res = super(WebsiteSale, self)._get_mandatory_fields_shipping(country_id=country_id)
-        res.pop(3)
+        res.remove('city')
         if country_id:
             country = request.env['res.country'].browse(country_id)
             if country.state_required:
-                res.pop(4)
+                res.remove('state_id')
+            if country.zip_required:
+                res.remove('zip')
         return res
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, **kw):
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
-
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection

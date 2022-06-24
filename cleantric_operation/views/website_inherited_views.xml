@@ -45,12 +45,10 @@
                             <div t-if="not partner_can_edit_vat" class="col-12 d-none d-xl-block">
                                 <small class="form-text text-muted">Changing company name or VAT number is not allowed once document(s) have been issued for your account. <br/>Please contact us directly for this operation.</small>
                             </div>
-                            <div t-attf-class="form-group  #{error.get('phone') and 'o_has_error' or ''} col-xl-6">
+                            <div t-attf-class="form-group #{error.get('mobile') and 'o_has_error' or ''} col-xl-6">
                                 <label class="col-form-label" for="mobile">Mobile</label>
-                                <input type="tel" name="mobile" t-attf-class="form-control" t-att-value="mobile or partner.mobile" t-att-title="None if partner_can_edit_vat else mobile_not_editable_message" />
+                                <input type="tel" name="mobile" t-attf-class="form-control #{error.get('mobile') and 'is-invalid' or ''}" t-att-value="mobile or partner.mobile"  />
                             </div>
-
-
                             <div class="clearfix" />
                             <div t-attf-class="form-group #{error.get('street') and 'o_has_error' or ''} col-xl-6">
                                 <label class="col-form-label" for="street">Street</label>
@@ -118,7 +116,7 @@
                         <label t-attf-class="col-form-label #{mode[1] == 'shipping' and 'label-optional' or ''}" for="email">Email</label>
                         <input type="email" name="email" t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}" t-att-value="'email' in checkout and checkout['email']" />
                     </div>
-                    <div t-attf-class="form-group #{error.get('mobile') and 'o_has_error' or ''} col-lg-6" id="div_phone">
+                    <div t-attf-class="form-group #{error.get('mobile') and 'o_has_error' or ''} col-lg-6" id="div_mobile">
                         <label class="col-form-label" for="mobile">Mobile</label>
                         <input type="tel" name="mobile" t-attf-class="form-control #{error.get('mobile') and 'is-invalid' or ''}" t-att-value="'mobile' in checkout and checkout['mobile']" readonly="1"/>
                     </div>

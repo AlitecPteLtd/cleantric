@@ -1,5 +1,5 @@
 from odoo import http,tools, _
-from odoo.http import request
+from odoo.http import request,route
 from odoo.addons.portal.controllers.portal import get_records_pager, CustomerPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 from werkzeug.exceptions import Forbidden, NotFound
@@ -170,6 +170,16 @@ class CustomerPortal(CustomerPortal):
             'state_id': session_appointment_id.partner_id.state_id and session_appointment_id.partner_id.state_id.id or '',
             'zipcode': session_appointment_id.partner_id.zip or ''
         })
+        return res
+
+    @route(['/my/account'], type='http', auth='user', website=True)
+    def account(self, redirect=None, **post):
+        res = super(CustomerPortal, self).account(redirect=redirect,**post)
+        partner = request.env.user.partner_id
+        if request.httprequest.method == 'POST':
+            if not partner.is_changed:
+                vals = {'is_changed': True}
+                partner.sudo().write(vals)
         return res
 
 

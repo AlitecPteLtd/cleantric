@@ -81,7 +81,7 @@
                             </div>
                             <div class="form-group  col-xl-3">
                                 <label t-attf-class="col-form-label #{'zipcode' not in mandatory_fields and 'label-optional' or ''}" for="zipcode">
-                                    <b> Zip / Postal Code</b>
+                                    <b>Postal Code</b>
                                 </label>
                                 <input type="text"
                                        name="zipcode"
@@ -115,11 +115,15 @@
                                 />
                           </div>
                             <div class="clearfix col-xl-12"/>
+                              <h6 style="margin-left:15px;">
+                                  Please contact our Account Manager if there is any changes in your delivery address.
+                              </h6>
+                            <div class="clearfix col-xl-12"/>
                             <div name="extra_notes_div"
                                  t-attf-class="form-group #{error.get('description') and 'o_has_error' or ''} col-xl-12"
                             >
                                 <label class="col-form-label label-optional" for="description">
-                                    Extra comments
+                                    <b>Extra comments</b>
                                 </label>
                                 <textarea type="text"
                                           name="description"
@@ -136,6 +140,27 @@
                         </button>
                  </div>
               </xpath>
+         </template>
+
+         <template id="business_portal_appointment_page" inherit_id="business_appointment_website_sale.portal_appointment_page" name="My Business Appointment">
+            <xpath expr="//div[@id='ba_order_sale']" position="replace">
+                <div class="col-md-6" id="ba_order_sale" t-if="show_order">
+                <strong>Order: </strong>
+                <a role = 'button' class="btn btn-primary btn-block mb8 " href="#" t-attf-href="/my/orders/#{ba_appointment_id.sudo().order_id.id}">
+                     View Order and Make Payment (<t t-esc="ba_appointment_id.sudo().order_id.name"/>)
+                </a>
+            </div>
+            </xpath>
+         </template>
+
+         <template id="portal_appointment_add_alert" inherit_id="business_appointment_website.portal_appointments" name="My Appointments">
+             <xpath expr="//thead" position="before">
+                <div  class="col-md-12 mt4 alert alert-info">
+                    <t>
+                    Add a reminder : <a>Package booking will be updated upon confirmation within 3 business days.</a>
+                    </t>
+                </div>
+             </xpath>
          </template>
     </data>
 </odoo>

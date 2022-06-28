@@ -1,0 +1,12 @@
+<odoo>
+    <record id="is_change_view_partner_form" model="ir.ui.view">
+        <field name="name">is_change_view_partner_form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="after" >
+                <field name="is_changed" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

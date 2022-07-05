@@ -157,7 +157,7 @@
              <xpath expr="//thead" position="before">
                 <div  class="col-md-12 mt4 alert alert-info">
                     <t>
-                    Add a reminder : <a>Package booking will be updated upon confirmation within 3 business days.</a>
+                        Reminder : <a>Package booking will be updated upon confirmation within 3 business days.</a>
                     </t>
                 </div>
              </xpath>

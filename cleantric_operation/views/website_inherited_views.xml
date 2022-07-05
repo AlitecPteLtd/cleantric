@@ -74,17 +74,17 @@
                                 <label class="col-form-label" for="street">Street</label>
                                 <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="street or partner.street" t-att-disabled="'1' if partner.is_changed else None"/>
                             </div>
-                             <div t-attf-class="form-group col-xl-6">
+                             <div t-attf-class="form-group #{error.get('street2') and 'o_has_error' or ''} col-xl-6">
                                 <label class="col-form-label" for="street2">Unit No</label>
-                                <input type="text" name="street2" t-attf-class="form-control " t-att-value="street2 or partner.street2" t-att-title="None if partner_can_edit_vat else street2_not_editable_message" t-att-disabled="'1' if partner.is_changed else None"/>
+                                <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="street2 or partner.street2" t-att-title="None if partner_can_edit_vat else street2_not_editable_message" t-att-disabled="'1' if partner.is_changed else None"/>
                             </div>
                             <div t-attf-class="form-group #{error.get('city') and 'o_has_error' or ''} col-xl-6">
                                 <label class="col-form-label" for="city">City</label>
                                 <input type="text" name="city" t-attf-class="form-control #{error.get('city') and 'is-invalid' or ''}" t-att-value="city or partner.city" t-att-disabled="'1' if partner.is_changed else None"/>
                             </div>
-                            <div t-attf-class="form-group #{error.get('zip') and 'o_has_error' or ''} col-xl-6">
-                                <label class="col-form-label label-optional" for="zipcode">Zip / Postal Code</label>
-                                <input type="text" name="zipcode" t-attf-class="form-control #{error.get('zip') and 'is-invalid' or ''}" t-att-value="zipcode or partner.zip" t-att-disabled="'1' if partner.is_changed else None"/>
+                            <div t-attf-class="form-group #{error.get('zipcode') and 'o_has_error' or ''} col-xl-6">
+                                <label class="col-form-label label-optional" for="zipcode"><b>Postal Code</b></label>
+                                <input type="text" name="zipcode" t-attf-class="form-control #{error.get('zipcode') and 'is-invalid' or ''}" t-att-value="zipcode or partner.zip" t-att-disabled="'1' if partner.is_changed else None"/>
                             </div>
                             <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-xl-6">
                                 <label class="col-form-label" for="country_id">Country</label>
@@ -191,6 +191,10 @@
                                                 </t>
                                             </select>
                                         </div>
+                       <div class="w-100"/>
+                        <div style="margin-bottom: 20px; margin-left: 10px; ">
+                            <small>Please contact our Account Manager if there is any changes in your delivery address</small>
+                        </div>
 
                        <div class="w-100"/>
                        <t t-if="mode == ('new', 'billing') and not only_services">

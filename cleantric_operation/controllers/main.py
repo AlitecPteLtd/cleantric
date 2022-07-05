@@ -6,8 +6,8 @@ from werkzeug.exceptions import Forbidden, NotFound
 
     
 class CustomerPortal(CustomerPortal):
-    MANDATORY_BILLING_FIELDS = ["name", "mobile", "email", "street", "country_id"]
-    OPTIONAL_BILLING_FIELDS = ["zipcode", "state_id", "vat", "company_name", "street2", "city"]
+    MANDATORY_BILLING_FIELDS = ["name", "mobile", "email", "street", "country_id","street2","zipcode"]
+    OPTIONAL_BILLING_FIELDS = [ "state_id", "vat", "company_name","city"]
     """
         this controller inherit appointment page and the user not login then force fully
          redirect login page.
@@ -174,12 +174,20 @@ class CustomerPortal(CustomerPortal):
 
     @route(['/my/account'], type='http', auth='user', website=True)
     def account(self, redirect=None, **post):
+        values = self._prepare_portal_layout_values()
         res = super(CustomerPortal, self).account(redirect=redirect,**post)
         partner = request.env.user.partner_id
         if request.httprequest.method == 'POST':
-            if not partner.is_changed:
-                vals = {'is_changed': True}
-                partner.sudo().write(vals)
+            error, error_message = self.details_form_validate(post)
+            values.update({
+                 'error': error,
+                 'error_message': error_message
+            })
+            values.update(post)
+            if not error:
+                if not partner.is_changed:
+                    vals = {'is_changed': True}
+                    partner.sudo().write(vals)
         return res
 
 

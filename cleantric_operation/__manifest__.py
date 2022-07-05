@@ -7,7 +7,7 @@
     'description': "",
     'author': "Alitec Pte Ltd",
     'website': "http://www.alitec.sg",
-    'version': '0.1.0.1.3',
+    'version': '0.1.0.1.4',
     'depends': ['crm', 'website_crm', 'website', 'business_appointment_website', 'portal','business_appointment_website_sale','base'],
     'data': [
         'views/contact_us.xml',

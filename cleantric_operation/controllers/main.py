@@ -57,20 +57,30 @@ class CustomerPortal(CustomerPortal):
         if four_step:
             res = request.redirect("/appointments/4?progress_step=4")
         else:
+            post.update({
+                'mobile': session_appointment_id.partner_id.mobile,
+                'street': session_appointment_id.partner_id.street,
+                'street2': session_appointment_id.partner_id.street2,
+                'city': session_appointment_id.partner_id.city,
+                'country_id': session_appointment_id.partner_id.country_id and session_appointment_id.partner_id.country_id.id,
+                'state_id': session_appointment_id.partner_id.state_id and session_appointment_id.partner_id.state_id.id,
+                'zipcode': session_appointment_id.partner_id.zip
+            })
             error, error_message, contact_values = self._contact_details_validate(session_appointment_id, post)
             values.update(contact_values)
             r_error, r_error_message, reservation_vals = self._reservation_details_validate(request.params)
             values.update(reservation_vals)
             error.update(r_error)
             error_message += r_error_message
+        if request.httprequest.method == 'POST':
             values.update({
-                'mobile': session_appointment_id.partner_id.mobile or False,
-                'street': session_appointment_id.partner_id.street or '',
-                'street2': session_appointment_id.partner_id.street2 or '',
-                'city': session_appointment_id.partner_id.city or '',
-                'country_id': session_appointment_id.partner_id.country_id and session_appointment_id.partner_id.country_id.id or '',
-                'state_id': session_appointment_id.partner_id.state_id and session_appointment_id.partner_id.state_id.id or '',
-                'zipcode': session_appointment_id.partner_id.zip or ''
+                'mobile': session_appointment_id.partner_id.mobile,
+                'street': session_appointment_id.partner_id.street,
+                'street2': session_appointment_id.partner_id.street2,
+                'city': session_appointment_id.partner_id.city,
+                'country_id': session_appointment_id.partner_id.country_id and session_appointment_id.partner_id.country_id.id,
+                'state_id': session_appointment_id.partner_id.state_id and session_appointment_id.partner_id.state_id.id,
+                'zipcode': session_appointment_id.partner_id.zip
             })
             if error:
                 error_vals = {}
@@ -86,7 +96,6 @@ class CustomerPortal(CustomerPortal):
                     "error_message": error_message,
                     "error_vals": error_vals,
                 })
-
                 session_appointment_id._update_session_contact_details(values, False)
                 res = request.redirect("/appointments/5?progress_step=5")
             else:
@@ -143,16 +152,6 @@ class CustomerPortal(CustomerPortal):
             except Exception as e:
                 error["mobile"] = 'error'
                 error_message.append(_('Invalid Mobile! {}'.format(e)))
-        existing_partner = session_appointment_id._check_existing_duplicates(
-            data.get('email'), data.get("mobile"), data.get("phone"), session_appointment_id.partner_id,
-        )
-        if existing_partner:
-            error["email"] = 'error'
-            error["mobile"] = 'error'
-            error["phone"] = 'error'
-            error_message.append(_(
-                'Sorry, but the user with the same email, phone, or mobile already exists! Please change or log in!'
-            ))
         if [err for err in error.values() if err == 'missing']:
             error_message.append(_('Some required fields are empty.'))
         values = {key: data[key] for key in all_fields if key in data}
@@ -272,6 +271,17 @@ class WebsiteSale(WebsiteSale):
                 return request.redirect('/shop/checkout')
 
         # IF POSTED
+        if not kw.get('partner_id') == -1:
+            partner = request.env['res.partner'].sudo().browse(int(kw.get('partner_id')))
+            kw.update({
+                'mobile': partner.mobile or '',
+                'street': partner.street or '',
+                'street2': partner.street2 or '',
+                'city': partner.city or '',
+                'country_id': partner.country_id and partner.country_id.id or '',
+                'state_id': partner.state_id and partner.state_id.id or '',
+                'zipcode': partner.zip or ''
+            })
         if 'submitted' in kw:
             pre_values = self.values_preprocess(order, mode, kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)

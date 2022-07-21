@@ -3,6 +3,8 @@ from odoo.http import request,route
 from odoo.addons.portal.controllers.portal import get_records_pager, CustomerPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 from werkzeug.exceptions import Forbidden, NotFound
+from odoo.addons.phone_validation.tools import phone_validation
+import phonenumbers
 
     
 class CustomerPortal(CustomerPortal):
@@ -129,7 +131,7 @@ class CustomerPortal(CustomerPortal):
         error = dict()
         error_message = []
         all_fields, mandatory_fields = request.website._return_website_ba_contact_fields()
-        mandatory_fields+=["mobile","street","street2","zipcode","country_id"]
+        mandatory_fields += ["mobile", "street", "street2", "zipcode", "country_id"]
         for field_name in mandatory_fields:
             if not data.get(field_name):
                 error[field_name] = 'missing'
@@ -188,6 +190,47 @@ class CustomerPortal(CustomerPortal):
                     vals = {'is_changed': True}
                     partner.sudo().write(vals)
         return res
+
+    def details_form_validate(self, data):
+
+        if data.get('mobile', False):
+
+            country_code = data.get('country_id') and request.env['res.country'].browse(int(data['country_id'])).code or False
+            if not country_code:
+                error, error_message = super(CustomerPortal, self).details_form_validate(data)
+                return error, error_message
+
+            mobile = data['mobile']
+            status, msg = self.phone_parse(mobile, country_code)
+
+            if status == 'ok':
+                checked_mobile = phone_validation.phone_format(mobile, 'SG', 65) # it is assumed that this module will be used only for Singapore
+                data['mobile'] = checked_mobile
+                error, error_message = super(CustomerPortal, self).details_form_validate(data)
+                return error, error_message
+
+            else:
+                error, error_message = super(CustomerPortal, self).details_form_validate(data)
+                error['mobile'] = 'error'
+                error_message.append(msg)
+                return error, error_message
+
+    def phone_parse(self, number, country_code):
+        try:
+            phone_nbr = phonenumbers.parse(number, region=country_code, keep_raw_input=True)
+        except phonenumbers.phonenumberutil.NumberParseException as e:
+            message = 'Unable to parse mobile number %s: %s' % (number, str(e))
+            return 'error', message
+
+        if not phonenumbers.is_possible_number(phone_nbr):
+            message = 'Impossible mobile number %s: probably invalid number of digits.' % number
+            return 'error', message
+
+        if not phonenumbers.is_valid_number(phone_nbr):
+            message = 'Invalid mobile number %s: probably incorrect prefix.' % number
+            return 'error', message
+
+        return 'ok', phone_nbr
 
 
 class WebsiteSale(WebsiteSale):

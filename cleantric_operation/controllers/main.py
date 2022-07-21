@@ -195,16 +195,16 @@ class CustomerPortal(CustomerPortal):
 
         if data.get('mobile', False):
 
-            country_code = data.get('country_id') and request.env['res.country'].browse(int(data['country_id'])).code or False
-            if not country_code:
+            country = data.get('country_id') and request.env['res.country'].browse(int(data['country_id'])) or False
+            if not country:
                 error, error_message = super(CustomerPortal, self).details_form_validate(data)
                 return error, error_message
 
             mobile = data['mobile']
-            status, msg = self.phone_parse(mobile, country_code)
+            status, msg = self.phone_parse(mobile, country.code)
 
             if status == 'ok':
-                checked_mobile = phone_validation.phone_format(mobile, 'SG', 65) # it is assumed that this module will be used only for Singapore
+                checked_mobile = phone_validation.phone_format(mobile, country.code, country.phone_code)
                 data['mobile'] = checked_mobile
                 error, error_message = super(CustomerPortal, self).details_form_validate(data)
                 return error, error_message
